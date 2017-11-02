@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,7 +41,11 @@ namespace Bugsnag.Common.Extensions
         public static string ParseFile(this string line)
         {
             var match = Regex.Match(line, "in (.+):line");
-            if (match.Groups.Count < 2) { return FileParseFailureDefaultValue; }
+            if (match.Groups.Count < 2)
+            {
+                match = Regex.Match(line, "in (.+):[0-9]+");
+                if (match.Groups.Count < 2) { return FileParseFailureDefaultValue; }
+            }
 
             return match.Groups[1].Value;
         }
@@ -58,7 +62,11 @@ namespace Bugsnag.Common.Extensions
         public static int? ParseLineNumber(this string line)
         {
             var match = Regex.Match(line, ":line ([0-9]+)");
-            if (match.Groups.Count < 2) { return null; }
+            if (match.Groups.Count < 2)
+            {
+                match = Regex.Match(line, ":([0-9]+)");
+                if (match.Groups.Count < 2) { return null; }
+            }
 
             return Convert.ToInt32(match.Groups[1].Value);
         }
